@@ -6,8 +6,11 @@ const request = require('supertest');
 const app = require('../app');
 const connection = require('../db/connection');
 
-describe.only('/', () => {
-  // beforeEach(() => connection.seed.run());
+describe('/', () => {
+  beforeEach(() => connection.seed.run());
+  after(() => {
+    connection.destroy();
+  });
   after(() => connection.destroy());
 
   describe('/api', () => {
@@ -17,6 +20,32 @@ describe.only('/', () => {
         .expect(200)
         .then(({ body }) => {
           expect(body.ok).to.equal(true);
+        });
+    });
+  });
+
+  describe('/topics', () => {
+    it('GET returns status 200 & array of the topics', () => {
+      return request(app)
+        .get('/api/topics')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).to.eql({
+            topics: [
+              {
+                description: 'The man, the Mitch, the legend',
+                slug: 'mitch'
+              },
+              {
+                description: 'Not dogs',
+                slug: 'cats'
+              },
+              {
+                description: 'what books are made of',
+                slug: 'paper'
+              }
+            ]
+          });
         });
     });
   });

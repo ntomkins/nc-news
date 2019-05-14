@@ -1,6 +1,7 @@
 const timeToDate = data => {
   return data.map(item => {
-    let dateStr = new Date(item.created_at);
+    let dateStr = new Date(item.created_at).toDateString();
+    //console.log(dateStr);
     const { created_at, ...otherKeys } = item;
     otherKeys.created_at = dateStr;
     return otherKeys;
