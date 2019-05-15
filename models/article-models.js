@@ -70,10 +70,19 @@ const insertArticleComment = ({ article_id }, { username, body }) => {
     .returning('*');
 };
 
+const updateComment = ({ comment_id }, { inc_votes }) => {
+  return connection
+    .increment('votes', inc_votes)
+    .from('comments')
+    .where({ comment_id })
+    .returning('*');
+};
+
 module.exports = {
   selectArticles,
   selectArticle,
   updateArticle,
   selectArticleComments,
-  insertArticleComment
+  insertArticleComment,
+  updateComment
 };

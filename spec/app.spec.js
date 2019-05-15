@@ -151,17 +151,15 @@ describe('/', () => {
         .send({ inc_votes: 42 })
         .expect(200)
         .then(({ body }) => {
-          expect(body.updatedArticle).to.eql([
-            {
-              article_id: 1,
-              title: 'Living in the shadow of a great man',
-              body: 'I find this existence challenging',
-              votes: 142,
-              topic: 'mitch',
-              author: 'butter_bridge',
-              created_at: '2018-11-15T12:21:54.171Z'
-            }
-          ]);
+          expect(body.updatedArticle).to.eql({
+            article_id: 1,
+            title: 'Living in the shadow of a great man',
+            body: 'I find this existence challenging',
+            votes: 142,
+            topic: 'mitch',
+            author: 'butter_bridge',
+            created_at: '2018-11-15T12:21:54.171Z'
+          });
         });
     });
   });
@@ -174,7 +172,7 @@ describe('/', () => {
           expect(body.articleComments).to.have.length(13);
         });
     });
-    it.only('POST returns status 201 & returns the added comment', () => {
+    it('POST returns status 201 & returns the added comment', () => {
       return request(app)
         .post('/api/articles/1/comments')
         .send({ username: 'butter_bridge', body: 'this is a comment body' })
@@ -186,6 +184,26 @@ describe('/', () => {
           expect(body.postedComment.votes).to.equal(0);
           expect(body.postedComment.body).to.equal('this is a comment body');
           expect(body.postedComment).to.haveOwnProperty('created_at');
+        });
+    });
+  });
+
+  describe('/comments/:comment_id', () => {
+    it('PATCH returns status 200 & returns patched comment', () => {
+      return request(app)
+        .patch('/api/comments/1')
+        .send({ inc_votes: 42 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.updatedComment).to.eql({
+            comment_id: 1,
+            author: 'butter_bridge',
+            article_id: 9,
+            votes: 58,
+            created_at: '2017-11-22T12:36:03.389Z',
+            body:
+              "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+          });
         });
     });
   });

@@ -20,7 +20,7 @@ const getArticle = (req, res, next) => {
 
 const patchArticle = (req, res, next) => {
   updateArticle(req.params, req.body).then(updatedArticle => {
-    res.status(200).send({ updatedArticle });
+    res.status(200).send({ updatedArticle: updatedArticle[0] });
   });
 };
 
