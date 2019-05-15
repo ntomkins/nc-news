@@ -1,6 +1,6 @@
 const connection = require('../db/connection.js');
 
-const selectArticles = ({ sort_by, order, author }) => {
+const selectArticles = ({ sort_by, order, author, topic }) => {
   return connection
     .select(
       'articles.author', // username from users table
@@ -17,6 +17,7 @@ const selectArticles = ({ sort_by, order, author }) => {
     .orderBy(sort_by || 'created_at', order || 'desc')
     .modify(query => {
       if (author) query.where('articles.author', '=', author);
+      if (topic) query.where('articles.topic', '=', topic);
     });
 };
 

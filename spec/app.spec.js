@@ -95,6 +95,25 @@ describe('/', () => {
         .expect(200)
         .then(({ body }) => {
           body.articles.should.all.have.property('author', 'butter_bridge');
+          expect(body.articles).to.have.length(3);
+          expect(body.articles[0]).to.eql({
+            article_id: 1,
+            author: 'butter_bridge',
+            comment_count: '13',
+            created_at: '2018-11-15T12:21:54.171Z',
+            title: 'Living in the shadow of a great man',
+            topic: 'mitch',
+            votes: 100
+          });
+        });
+    });
+    it('can filter articles for a particular topic', () => {
+      return request(app)
+        .get('/api/articles/?topic=mitch')
+        .expect(200)
+        .then(({ body }) => {
+          body.articles.should.all.have.property('topic', 'mitch');
+          expect(body.articles).to.have.length(11);
           expect(body.articles[0]).to.eql({
             article_id: 1,
             author: 'butter_bridge',
