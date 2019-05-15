@@ -165,4 +165,14 @@ describe('/', () => {
         });
     });
   });
+  describe('/articles/:article_id/comments', () => {
+    it('GET returns status 200 & an array of comments with the article_id given', () => {
+      return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articleComments).to.have.length(13);
+        });
+    });
+  });
 });

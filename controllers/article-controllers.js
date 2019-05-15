@@ -1,7 +1,8 @@
 const {
   selectArticles,
   selectArticle,
-  updateArticle
+  updateArticle,
+  selectArticleComments
 } = require('../models/article-models.js');
 
 const getArticles = (req, res, next) => {
@@ -22,4 +23,16 @@ const patchArticle = (req, res, next) => {
   });
 };
 
-module.exports = { getArticles, getArticle, patchArticle };
+const getArticleComments = (req, res, next) => {
+  selectArticleComments(req.params).then(articleComments => {
+    res.status(200).send({ articleComments });
+  });
+};
+
+module.exports = {
+  getArticles,
+  getArticle,
+  patchArticle,
+  getArticleComments,
+  postArticleComment
+};

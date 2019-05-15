@@ -41,8 +41,6 @@ const selectArticle = ({ article_id }) => {
 };
 
 const updateArticle = ({ article_id }, { inc_votes }) => {
-  console.log(article_id, inc_votes);
-
   return connection
     .increment('votes', inc_votes)
     .from('articles')
@@ -50,4 +48,24 @@ const updateArticle = ({ article_id }, { inc_votes }) => {
     .returning('*');
 };
 
-module.exports = { selectArticles, selectArticle, updateArticle };
+const selectArticleComments = ({ article_id }) => {
+  console.log(article_id);
+  return connection
+    .select(
+      'comments.comment_id',
+      'comments.votes',
+      'comments.created_at',
+      'comments.author',
+      'comments.body',
+      'comments.article_id'
+    )
+    .from('comments')
+    .where('comments.article_id', '=', article_id);
+};
+
+module.exports = {
+  selectArticles,
+  selectArticle,
+  updateArticle,
+  selectArticleComments
+};
