@@ -4,6 +4,8 @@ const chai = require('chai');
 const { expect } = chai;
 const request = require('supertest');
 const chaiSorted = require('chai-sorted');
+chai.use(require('chai-things'));
+chai.should();
 chai.use(chaiSorted);
 
 const app = require('../app');
@@ -85,6 +87,23 @@ describe('/', () => {
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).to.be.ascendingBy('created_at');
+        });
+    });
+    it('can filter articles for a particular author', () => {
+      return request(app)
+        .get('/api/articles/?author=butter_bridge')
+        .expect(200)
+        .then(({ body }) => {
+          body.articles.should.all.have.property('author', 'butter_bridge');
+          expect(body.articles[0]).to.eql({
+            article_id: 1,
+            author: 'butter_bridge',
+            comment_count: '13',
+            created_at: '2018-11-15T12:21:54.171Z',
+            title: 'Living in the shadow of a great man',
+            topic: 'mitch',
+            votes: 100
+          });
         });
     });
   });
