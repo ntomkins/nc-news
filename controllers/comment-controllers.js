@@ -1,4 +1,4 @@
-const { updateComment } = require('../models/comment-models.js');
+const { updateComment, delComment } = require('../models/comment-models.js');
 
 const patchComment = (req, res, next) => {
   updateComment(req.params, req.body).then(updatedComment => {
@@ -6,6 +6,14 @@ const patchComment = (req, res, next) => {
   });
 };
 
+const deleteComment = (req, res, next) => {
+  delComment(req.params).then(deletedComment => {
+    res.sendStatus(204);
+    console.log(deletedComment);
+  });
+};
+
 module.exports = {
-  patchComment
+  patchComment,
+  deleteComment
 };

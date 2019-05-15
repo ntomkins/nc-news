@@ -8,6 +8,14 @@ const updateComment = ({ comment_id }, { inc_votes }) => {
     .returning('*');
 };
 
+const delComment = ({ comment_id }) => {
+  return connection('comments')
+    .where({ comment_id })
+    .del()
+    .from('comments');
+};
+
 module.exports = {
-  updateComment
+  updateComment,
+  delComment
 };

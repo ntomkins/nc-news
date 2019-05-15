@@ -206,5 +206,13 @@ describe('/', () => {
           });
         });
     });
+    it('Delete returns status 204', () => {
+      return request(app)
+        .delete('/api/comments/1')
+        .expect(204)
+        .then(({ body }) => {
+          expect(body).to.eql({});
+        });
+    });
   });
 });
