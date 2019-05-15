@@ -174,5 +174,19 @@ describe('/', () => {
           expect(body.articleComments).to.have.length(13);
         });
     });
+    it.only('POST returns status 201 & returns the added comment', () => {
+      return request(app)
+        .post('/api/articles/1/comments')
+        .send({ username: 'butter_bridge', body: 'this is a comment body' })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.postedComment.comment_id).to.equal(19);
+          expect(body.postedComment.author).to.equal('butter_bridge');
+          expect(body.postedComment.article_id).to.equal(1);
+          expect(body.postedComment.votes).to.equal(0);
+          expect(body.postedComment.body).to.equal('this is a comment body');
+          expect(body.postedComment).to.haveOwnProperty('created_at');
+        });
+    });
   });
 });

@@ -2,7 +2,8 @@ const {
   selectArticles,
   selectArticle,
   updateArticle,
-  selectArticleComments
+  selectArticleComments,
+  insertArticleComment
 } = require('../models/article-models.js');
 
 const getArticles = (req, res, next) => {
@@ -26,6 +27,12 @@ const patchArticle = (req, res, next) => {
 const getArticleComments = (req, res, next) => {
   selectArticleComments(req.params).then(articleComments => {
     res.status(200).send({ articleComments });
+  });
+};
+
+const postArticleComment = (req, res, next) => {
+  insertArticleComment(req.params, req.body).then(postedComment => {
+    res.status(201).send({ postedComment: postedComment[0] });
   });
 };
 

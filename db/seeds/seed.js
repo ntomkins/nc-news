@@ -39,6 +39,7 @@ exports.seed = (knex, Promise) => {
         'belongs_to',
         'article_id'
       );
+      //console.log(commentDataDateId);
       return knex('comments')
         .insert(commentDataDateId)
         .returning('*');

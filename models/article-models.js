@@ -49,7 +49,6 @@ const updateArticle = ({ article_id }, { inc_votes }) => {
 };
 
 const selectArticleComments = ({ article_id }) => {
-  console.log(article_id);
   return connection
     .select(
       'comments.comment_id',
@@ -63,9 +62,18 @@ const selectArticleComments = ({ article_id }) => {
     .where('comments.article_id', '=', article_id);
 };
 
+const insertArticleComment = ({ article_id }, { username, body }) => {
+  const author = username;
+  return connection
+    .insert({ body, article_id, author })
+    .into('comments')
+    .returning('*');
+};
+
 module.exports = {
   selectArticles,
   selectArticle,
   updateArticle,
-  selectArticleComments
+  selectArticleComments,
+  insertArticleComment
 };
