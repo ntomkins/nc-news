@@ -55,7 +55,7 @@ describe('/', () => {
     });
   });
 
-  describe.only('/articles', () => {
+  describe('/articles', () => {
     it('GET returns status 200 & array of the articles', () => {
       return request(app)
         .get('/api/articles')
@@ -123,6 +123,45 @@ describe('/', () => {
             topic: 'mitch',
             votes: 100
           });
+        });
+    });
+  });
+
+  describe('/articles/:article_id', () => {
+    it('GET returns status 200 & the article object requested', () => {
+      return request(app)
+        .get('/api/articles/1')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).to.eql({
+            article_id: 1,
+            title: 'Living in the shadow of a great man',
+            author: 'butter_bridge',
+            topic: 'mitch',
+            body: 'I find this existence challenging',
+            votes: 100,
+            created_at: '2018-11-15T12:21:54.171Z',
+            comment_count: '13'
+          });
+        });
+    });
+    it('PATCH returns status 200 & returns modified article', () => {
+      return request(app)
+        .patch('/api/articles/1')
+        .send({ inc_votes: 42 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.updatedArticle).to.eql([
+            {
+              article_id: 1,
+              title: 'Living in the shadow of a great man',
+              body: 'I find this existence challenging',
+              votes: 142,
+              topic: 'mitch',
+              author: 'butter_bridge',
+              created_at: '2018-11-15T12:21:54.171Z'
+            }
+          ]);
         });
     });
   });

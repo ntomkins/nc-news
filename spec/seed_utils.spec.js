@@ -14,12 +14,12 @@ describe('timeToDate()', () => {
         created_at: 1542284514171
       }
     ];
-    const newDate = timeToDate(article).created_at;
-    console.log(newDate);
+    const newDate = timeToDate(article)[0].created_at.toISOString();
+    expect(newDate).to.equal('2018-11-15T12:21:54.171Z');
     expect(timeToDate(article)).to.eql([
       {
         title: 'Living in the shadow of a great man',
-        created_at: 'Thu Nov 15 2018'
+        created_at: new Date(1542284514171)
       }
     ]);
   });
