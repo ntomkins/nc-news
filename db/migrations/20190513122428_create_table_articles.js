@@ -6,8 +6,10 @@ exports.up = function(knex, Promise) {
     articlesTable.integer('votes').defaultTo(0);
     articlesTable.string('topic').references('topics.slug');
     articlesTable.string('author').references('users.username');
-    articlesTable.timestamp('created_at').defaultTo(knex.fn.now());
-    // articlesTable.string('created_at').defaultTo(new Date().toUTCString());
+    articlesTable
+      .datetime('created_at', { precision: 6 })
+      .defaultTo(knex.fn.now(6));
+    // articlesTable.timestamp('created_at').defaultTo(knex.fn.now());
   });
 };
 

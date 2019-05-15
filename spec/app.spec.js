@@ -1,7 +1,10 @@
 process.env.NODE_ENV = 'test';
 
-const { expect } = require('chai');
+const chai = require('chai');
+const { expect } = chai;
 const request = require('supertest');
+const chaiSorted = require('chai-sorted');
+chai.use(chaiSorted);
 
 const app = require('../app');
 const connection = require('../db/connection');
@@ -46,6 +49,26 @@ describe('/', () => {
               }
             ]
           });
+        });
+    });
+  });
+
+  describe.only('/articles', () => {
+    it('GET returns status 200 & array of the articles', () => {
+      return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0]).to.eql({
+            article_id: 1,
+            author: 'butter_bridge',
+            comment_count: '13',
+            created_at: '2018-11-15T12:21:54.171Z',
+            title: 'Living in the shadow of a great man',
+            topic: 'mitch',
+            votes: 100
+          });
+          expect(body.articles).to.be.descendingBy('created_at');
         });
     });
   });

@@ -29,7 +29,7 @@ exports.seed = (knex, Promise) => {
         .returning('*');
     })
     .then(articleRows => {
-      // console.log(articleRows);
+      //console.log(articleRows);
       const commentDataAuthor = renameKey(commentData, 'created_by', 'author');
       const commentDataDate = timeToDate(commentDataAuthor);
       const articleIdRef = createRef(articleRows, 'title', 'article_id');

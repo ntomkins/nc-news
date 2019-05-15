@@ -4,8 +4,10 @@ exports.up = function(knex, Promise) {
     commentsTable.string('author').references('users.username');
     commentsTable.integer('article_id').references('articles.article_id');
     commentsTable.integer('votes').defaultTo(0);
-    // commentsTable.string('created_at').defaultTo(new Date().toUTCString());
-    commentsTable.timestamp('created_at').defaultTo(knex.fn.now());
+    commentsTable
+      .datetime('created_at', { precision: 6 })
+      .defaultTo(knex.fn.now(6));
+    // commentsTable.timestamp('created_at').defaultTo(knex.fn.now());
     commentsTable.text('body');
   });
 };
