@@ -71,5 +71,21 @@ describe('/', () => {
           expect(body.articles).to.be.descendingBy('created_at');
         });
     });
+    it('takes a sort_by query and sorts by it', () => {
+      return request(app)
+        .get('/api/articles/?sorted_by=votes')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).to.be.descendingBy('votes');
+        });
+    });
+    it('takes an order query and orders by it', () => {
+      return request(app)
+        .get('/api/articles/?order=asc')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).to.be.ascendingBy('created_at');
+        });
+    });
   });
 });
