@@ -27,6 +27,14 @@ describe('/', () => {
           expect(body.ok).to.equal(true);
         });
     });
+    it('ERROR 404 with invalid route', () => {
+      return request(app)
+        .get('/api/pets')
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('Route Not Found');
+        });
+    });
   });
 
   describe('/topics', () => {
@@ -216,7 +224,7 @@ describe('/', () => {
     });
   });
 
-  describe.only('/users/:username', () => {
+  describe('/users/:username', () => {
     it('GET returns status 200 & and the user object', () => {
       return request(app)
         .get('/api/users/butter_bridge')

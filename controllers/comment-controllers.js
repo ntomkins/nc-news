@@ -9,7 +9,6 @@ const patchComment = (req, res, next) => {
 const deleteComment = (req, res, next) => {
   delComment(req.params).then(deletedComment => {
     res.sendStatus(204);
-    console.log(deletedComment);
   });
 };
 
