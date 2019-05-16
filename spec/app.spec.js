@@ -27,7 +27,7 @@ describe.only('/', () => {
           expect(body.ok).to.equal(true);
         });
     });
-    it('ERROR 404 with invalid route', () => {
+    it('ERROR status:404 with invalid route', () => {
       return request(app)
         .get('/api/pets')
         .expect(404)
@@ -35,7 +35,7 @@ describe.only('/', () => {
           expect(body.msg).to.eql('Route Not Found');
         });
     });
-    it('ERROR 405 with invalid method request', () => {
+    it('ERROR status:405 with invalid method request', () => {
       return request(app)
         .put('/api')
         .expect(405)
@@ -46,7 +46,7 @@ describe.only('/', () => {
   });
 
   describe('/topics', () => {
-    it('GET returns status 200 & array of the topics', () => {
+    it('GET status:200, sends array of the topics', () => {
       return request(app)
         .get('/api/topics')
         .expect(200)
@@ -69,7 +69,7 @@ describe.only('/', () => {
           });
         });
     });
-    it('ERROR 405 with invalid method request', () => {
+    it('ERROR status:405 with invalid method request', () => {
       return request(app)
         .put('/api/topics')
         .expect(405)
@@ -80,7 +80,7 @@ describe.only('/', () => {
   });
 
   describe('/articles', () => {
-    it('GET returns status 200 & array of the articles', () => {
+    it('GET status:200, sends array of the articles', () => {
       return request(app)
         .get('/api/articles')
         .expect(200)
@@ -97,7 +97,7 @@ describe.only('/', () => {
           expect(body.articles).to.be.descendingBy('created_at');
         });
     });
-    it('takes a sort_by query and sorts by it', () => {
+    it('GET status:200, takes a sort_by query and sorts by it', () => {
       return request(app)
         .get('/api/articles?sorted_by=votes')
         .expect(200)
@@ -105,7 +105,7 @@ describe.only('/', () => {
           expect(body.articles).to.be.descendingBy('votes');
         });
     });
-    it('takes an order query and orders by it', () => {
+    it('GET status:200, takes an order query and orders by it', () => {
       return request(app)
         .get('/api/articles?order=asc')
         .expect(200)
@@ -113,7 +113,7 @@ describe.only('/', () => {
           expect(body.articles).to.be.ascendingBy('created_at');
         });
     });
-    it('can filter articles for a particular author', () => {
+    it('GET status:200, can filter articles for a particular author', () => {
       return request(app)
         .get('/api/articles?author=butter_bridge')
         .expect(200)
@@ -131,7 +131,7 @@ describe.only('/', () => {
           });
         });
     });
-    it('can filter articles for a particular topic', () => {
+    it('GET status:200, can filter articles for a particular topic', () => {
       return request(app)
         .get('/api/articles?topic=mitch')
         .expect(200)
@@ -149,7 +149,7 @@ describe.only('/', () => {
           });
         });
     });
-    it('ERROR 405 with invalid method request', () => {
+    it('ERROR status:405 with invalid method request', () => {
       return request(app)
         .put('/api/articles')
         .expect(405)
@@ -157,7 +157,7 @@ describe.only('/', () => {
           expect(body.msg).to.eql('Method Not Allowed');
         });
     });
-    it('ERROR 400 when trying to sort by something that does not exist', () => {
+    it('ERROR status:400 when trying to sort by something that does not exist', () => {
       return request(app)
         .get('/api/articles?sort_by=pets')
         .expect(400)
@@ -165,7 +165,7 @@ describe.only('/', () => {
           expect(body.msg).to.eql('querry input does not exist');
         });
     });
-    it('ERROR 400 when trying to order by something other than asc or desc', () => {
+    it('ERROR status:400 when trying to order by something other than asc or desc', () => {
       return request(app)
         .get('/api/articles?order=random')
         .expect(400)
@@ -173,7 +173,7 @@ describe.only('/', () => {
           expect(body.msg).to.eql('must order by asc or desc');
         });
     });
-    it('ERROR 400 when trying to filter results by author with one that does not exist', () => {
+    it('ERROR status:400 when trying to filter results by author with one that does not exist', () => {
       return request(app)
         .get('/api/articles?author=tolkien')
         .expect(404)
@@ -181,7 +181,7 @@ describe.only('/', () => {
           expect(body.msg).to.eql('author does not exist');
         });
     });
-    it('GET 200, empty array for articles for users with no articles', () => {
+    it('GET status:200, empty array for articles for users with no articles', () => {
       return request(app)
         .get('/api/articles?author=lurker')
         .expect(200)
@@ -189,7 +189,7 @@ describe.only('/', () => {
           expect(body.articles).to.eql([]);
         });
     });
-    it('ERROR 404, when topic is querried when it does not exist', () => {
+    it('ERROR status:404, when topic is querried when it does not exist', () => {
       return request(app)
         .get('/api/articles?topic=pineapples')
         .expect(404)
@@ -200,7 +200,7 @@ describe.only('/', () => {
   });
 
   describe('/articles/:article_id', () => {
-    it('GET returns status 200 & the article object requested', () => {
+    it('GET status:200 & the article object requested', () => {
       return request(app)
         .get('/api/articles/1')
         .expect(200)
@@ -217,7 +217,7 @@ describe.only('/', () => {
           });
         });
     });
-    it('PATCH returns status 200 & returns modified article', () => {
+    it('PATCH status:200, returns patched comment, add or subtracts inc_votes from article', () => {
       return request(app)
         .patch('/api/articles/1')
         .send({ inc_votes: 42 })
@@ -234,7 +234,7 @@ describe.only('/', () => {
           });
         });
     });
-    it('ERROR 404 when no article is found for the given article_id', () => {
+    it('ERROR status:404 when no article is found for the given article_id', () => {
       return request(app)
         .get('/api/articles/999')
         .expect(404)
@@ -242,7 +242,7 @@ describe.only('/', () => {
           expect(body.msg).to.eql('No article found for article_id: 999');
         });
     });
-    it('ERROR 400 when incorrect article_id syntax is used', () => {
+    it('ERROR status:400 when incorrect article_id syntax is used', () => {
       return request(app)
         .get('/api/articles/Moustache')
         .expect(400)
@@ -250,10 +250,37 @@ describe.only('/', () => {
           expect(body.msg).to.eql('invalid input syntax for type integer');
         });
     });
+    it('ERROR status:400, returns error when no inc_votes on body', () => {
+      return request(app)
+        .patch('/api/articles/1')
+        .send({ pineapples: 42 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('request must include inc_votes');
+        });
+    });
+    it('ERROR status:400, returns error when no inc_votes on body', () => {
+      return request(app)
+        .patch('/api/articles/1')
+        .send({ inc_votes: 42, pineapples: 42 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('request must only include inc_votes');
+        });
+    });
+    it('ERROR status:400, returns error when no inc_votes on body', () => {
+      return request(app)
+        .patch('/api/articles/1')
+        .send({ inc_votes: '42' })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('inc_votes must be an integer');
+        });
+    });
   });
 
   describe('/articles/:article_id/comments', () => {
-    it('GET returns status 200 & an array of comments with the article_id given', () => {
+    it('GET status:200 & an array of comments with the article_id given', () => {
       return request(app)
         .get('/api/articles/1/comments')
         .expect(200)
@@ -261,7 +288,23 @@ describe.only('/', () => {
           expect(body.articleComments).to.have.length(13);
         });
     });
-    it('POST returns status 201 & returns the added comment', () => {
+    // it('ERROR status:400, invalid article_id', () => {
+    //   return request(app)
+    //     .get('/api/articles/cat/comments')
+    //     .expect(400)
+    //     .then(({ body }) => {
+    //       expect(body.msg).to.eql('invalid input syntax for type integer');
+    //     });
+    // });
+    // it('ERROR status:404, article not found', () => {
+    //   return request(app)
+    //     .get('/api/articles/9000/comments')
+    //     .expect(400)
+    //     .then(({ body }) => {
+    //       expect(body.msg).to.eql('invalid input syntax for type integer');
+    //     });
+    // });
+    it('POST status:201 & returns the added comment', () => {
       return request(app)
         .post('/api/articles/1/comments')
         .send({ username: 'butter_bridge', body: 'this is a comment body' })
@@ -278,7 +321,7 @@ describe.only('/', () => {
   });
 
   describe('/comments/:comment_id', () => {
-    it('PATCH returns status 200 & returns patched comment', () => {
+    it('PATCH status:200, returns patched comment, add or subtracts inc_votes from comment', () => {
       return request(app)
         .patch('/api/comments/1')
         .send({ inc_votes: 42 })
@@ -295,7 +338,7 @@ describe.only('/', () => {
           });
         });
     });
-    it('DELETE returns status 204, no content', () => {
+    it('DELETE status:204, no content', () => {
       return request(app)
         .delete('/api/comments/1')
         .expect(204)
@@ -303,7 +346,7 @@ describe.only('/', () => {
           expect(body).to.eql({});
         });
     });
-    it('ERROR 405 with invalid method request', () => {
+    it('ERROR status:405 with invalid method request', () => {
       return request(app)
         .put('/api/comments/1')
         .expect(405)
@@ -314,7 +357,7 @@ describe.only('/', () => {
   });
 
   describe('/users/:username', () => {
-    it('GET returns status 200 & and the user object', () => {
+    it('GET status:200, sends the user object', () => {
       return request(app)
         .get('/api/users/butter_bridge')
         .expect(200)
@@ -327,7 +370,7 @@ describe.only('/', () => {
           });
         });
     });
-    it('ERROR 405 with invalid method request', () => {
+    it('ERROR status:405, invalid method request', () => {
       return request(app)
         .put('/api/users/butter_bridge')
         .expect(405)

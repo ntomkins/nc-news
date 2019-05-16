@@ -48,21 +48,34 @@ const getArticle = (req, res, next) => {
 };
 
 const patchArticle = (req, res, next) => {
-  updateArticle(req.params, req.body).then(updatedArticle => {
-    res.status(200).send({ updatedArticle: updatedArticle[0] });
-  });
+  if (!Object.keys(req.body).includes('inc_votes')) {
+    next({ status: 400, msg: 'request must include inc_votes' });
+  } else if (Object.keys(req.body).length > 1) {
+    next({ status: 400, msg: 'request must only include inc_votes' });
+  } else if (!Number.isInteger(req.body.inc_votes)) {
+    next({ status: 400, msg: 'inc_votes must be an integer' });
+  } else
+    updateArticle(req.params, req.body)
+      .then(updatedArticle => {
+        res.status(200).send({ updatedArticle: updatedArticle[0] });
+      })
+      .catch(next);
 };
 
 const getArticleComments = (req, res, next) => {
-  selectArticleComments(req.params).then(articleComments => {
-    res.status(200).send({ articleComments });
-  });
+  selectArticleComments(req.params)
+    .then(articleComments => {
+      res.status(200).send({ articleComments });
+    })
+    .catch(next);
 };
 
 const postArticleComment = (req, res, next) => {
-  insertArticleComment(req.params, req.body).then(postedComment => {
-    res.status(201).send({ postedComment: postedComment[0] });
-  });
+  insertArticleComment(req.params, req.body)
+    .then(postedComment => {
+      res.status(201).send({ postedComment: postedComment[0] });
+    })
+    .catch(next);
 };
 
 module.exports = {
