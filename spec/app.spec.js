@@ -206,12 +206,28 @@ describe('/', () => {
           });
         });
     });
-    it('Delete returns status 204', () => {
+    it('DELETE returns status 204, no content', () => {
       return request(app)
         .delete('/api/comments/1')
         .expect(204)
         .then(({ body }) => {
           expect(body).to.eql({});
+        });
+    });
+  });
+
+  describe.only('/users/:username', () => {
+    it('GET returns status 200 & and the user object', () => {
+      return request(app)
+        .get('/api/users/butter_bridge')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.user).to.eql({
+            avatar_url:
+              'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg',
+            name: 'jonny',
+            username: 'butter_bridge'
+          });
         });
     });
   });

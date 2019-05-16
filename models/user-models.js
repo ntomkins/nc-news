@@ -1,10 +1,12 @@
 const connection = require('../db/connection.js');
 
-const selectUser = ({ user_id }) => {
+const selectUser = ({ username }) => {
+  console.log(username);
   return connection
-    .select(username, avatar_url, name)
+    .select('username', 'avatar_url', 'name')
     .from('users')
-    .where({ user_id });
+    .where({ username })
+    .first();
 };
 
 module.exports = {
