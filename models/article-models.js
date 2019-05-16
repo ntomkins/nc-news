@@ -1,24 +1,30 @@
 const connection = require('../db/connection.js');
 
 const selectArticles = ({ sort_by, order, author, topic }) => {
-  return connection
-    .select(
-      'articles.article_id',
-      'articles.title',
-      'articles.author',
-      'articles.topic',
-      'articles.votes',
-      'articles.created_at'
-    )
-    .count('comments.article_id as comment_count')
-    .from('articles')
-    .leftJoin('comments', 'comments.article_id', '=', 'articles.article_id')
-    .groupBy('articles.article_id')
-    .orderBy(sort_by || 'created_at', order || 'desc')
-    .modify(query => {
-      if (author) query.where('articles.author', '=', author);
-      if (topic) query.where('articles.topic', '=', topic);
+  if (order !== 'desc' && order !== 'asc' && order !== undefined) {
+    return Promise.reject({
+      status: 400,
+      msg: 'must order by asc or desc'
     });
+  } else
+    return connection
+      .select(
+        'articles.article_id',
+        'articles.title',
+        'articles.author',
+        'articles.topic',
+        'articles.votes',
+        'articles.created_at'
+      )
+      .count('comments.article_id as comment_count')
+      .from('articles')
+      .leftJoin('comments', 'comments.article_id', '=', 'articles.article_id')
+      .groupBy('articles.article_id')
+      .orderBy(sort_by || 'created_at', order || 'desc')
+      .modify(query => {
+        if (author) query.where('articles.author', '=', author);
+        if (topic) query.where('articles.topic', '=', topic);
+      });
 };
 
 const selectArticle = ({ article_id }) => {

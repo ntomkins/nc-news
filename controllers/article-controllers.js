@@ -5,11 +5,24 @@ const {
   selectArticleComments,
   insertArticleComment
 } = require('../models/article-models.js');
+const { selectUser } = require('../models/user-models.js');
 
 const getArticles = (req, res, next) => {
-  selectArticles(req.query).then(articles => {
-    res.status(200).send({ articles });
-  });
+  const author = req.query.author ? req.query.author : null;
+
+  selectUser({ username: author })
+    .then(author => {
+      if (!author && req.query.author) {
+        return Promise.reject({
+          status: 404,
+          msg: 'author does not exist'
+        });
+      } else return selectArticles(req.query);
+    })
+    .then(articles => {
+      res.status(200).send({ articles });
+    })
+    .catch(next);
 };
 
 const getArticle = (req, res, next) => {

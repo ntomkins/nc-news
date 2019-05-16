@@ -11,7 +11,7 @@ chai.use(chaiSorted);
 const app = require('../app');
 const connection = require('../db/connection');
 
-describe('/', () => {
+describe.only('/', () => {
   beforeEach(() => connection.seed.run());
   after(() => {
     connection.destroy();
@@ -99,7 +99,7 @@ describe('/', () => {
     });
     it('takes a sort_by query and sorts by it', () => {
       return request(app)
-        .get('/api/articles/?sorted_by=votes')
+        .get('/api/articles?sorted_by=votes')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).to.be.descendingBy('votes');
@@ -107,7 +107,7 @@ describe('/', () => {
     });
     it('takes an order query and orders by it', () => {
       return request(app)
-        .get('/api/articles/?order=asc')
+        .get('/api/articles?order=asc')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).to.be.ascendingBy('created_at');
@@ -115,7 +115,7 @@ describe('/', () => {
     });
     it('can filter articles for a particular author', () => {
       return request(app)
-        .get('/api/articles/?author=butter_bridge')
+        .get('/api/articles?author=butter_bridge')
         .expect(200)
         .then(({ body }) => {
           body.articles.should.all.have.property('author', 'butter_bridge');
@@ -133,7 +133,7 @@ describe('/', () => {
     });
     it('can filter articles for a particular topic', () => {
       return request(app)
-        .get('/api/articles/?topic=mitch')
+        .get('/api/articles?topic=mitch')
         .expect(200)
         .then(({ body }) => {
           body.articles.should.all.have.property('topic', 'mitch');
@@ -155,6 +155,38 @@ describe('/', () => {
         .expect(405)
         .then(({ body }) => {
           expect(body.msg).to.eql('Method Not Allowed');
+        });
+    });
+    it('ERROR 400 when trying to sort by something that does not exist', () => {
+      return request(app)
+        .get('/api/articles?sort_by=pets')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('querry input does not exist');
+        });
+    });
+    it('ERROR 400 when trying to order by something other than asc or desc', () => {
+      return request(app)
+        .get('/api/articles?order=random')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('must order by asc or desc');
+        });
+    });
+    it('ERROR 400 when trying to filter results by author with one that does not exist', () => {
+      return request(app)
+        .get('/api/articles?author=tolkien')
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('author does not exist');
+        });
+    });
+    it('GET 200, empty array for articles for users with no articles', () => {
+      return request(app)
+        .get('/api/articles?author=lurker')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).to.eql([]);
         });
     });
   });
@@ -194,7 +226,7 @@ describe('/', () => {
           });
         });
     });
-    it.only('ERROR 404 when no article is found for the given article_id', () => {
+    it('ERROR 404 when no article is found for the given article_id', () => {
       return request(app)
         .get('/api/articles/999')
         .expect(404)
@@ -202,7 +234,16 @@ describe('/', () => {
           expect(body.msg).to.eql('No article found for article_id: 999');
         });
     });
+    it('ERROR 400 when incorrect article_id syntax is used', () => {
+      return request(app)
+        .get('/api/articles/Moustache')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('invalid input syntax for type integer');
+        });
+    });
   });
+
   describe('/articles/:article_id/comments', () => {
     it('GET returns status 200 & an array of comments with the article_id given', () => {
       return request(app)
