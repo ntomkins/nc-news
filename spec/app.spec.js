@@ -35,6 +35,14 @@ describe('/', () => {
           expect(body.msg).to.eql('Route Not Found');
         });
     });
+    it('ERROR 405 with invalid method request', () => {
+      return request(app)
+        .delete('/api')
+        .expect(405)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('Method Not Allowed');
+        });
+    });
   });
 
   describe('/topics', () => {
