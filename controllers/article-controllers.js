@@ -13,9 +13,17 @@ const getArticles = (req, res, next) => {
 };
 
 const getArticle = (req, res, next) => {
-  selectArticle(req.params).then(article => {
-    res.status(200).send({ article });
-  });
+  selectArticle(req.params)
+    .then(article => {
+      if (!article) {
+        return Promise.reject({
+          status: 404,
+          msg: `No article found for article_id: ${req.params.article_id}`
+        });
+      }
+      res.status(200).send({ article });
+    })
+    .catch(next);
 };
 
 const patchArticle = (req, res, next) => {

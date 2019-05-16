@@ -194,6 +194,14 @@ describe('/', () => {
           });
         });
     });
+    it.only('ERROR 404 when no article is found for the given article_id', () => {
+      return request(app)
+        .get('/api/articles/999')
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('No article found for article_id: 999');
+        });
+    });
   });
   describe('/articles/:article_id/comments', () => {
     it('GET returns status 200 & an array of comments with the article_id given', () => {
