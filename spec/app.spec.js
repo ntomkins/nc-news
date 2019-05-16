@@ -37,7 +37,7 @@ describe('/', () => {
     });
     it('ERROR 405 with invalid method request', () => {
       return request(app)
-        .delete('/api')
+        .put('/api')
         .expect(405)
         .then(({ body }) => {
           expect(body.msg).to.eql('Method Not Allowed');
@@ -67,6 +67,14 @@ describe('/', () => {
               }
             ]
           });
+        });
+    });
+    it('ERROR 405 with invalid method request', () => {
+      return request(app)
+        .put('/api/topics')
+        .expect(405)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('Method Not Allowed');
         });
     });
   });
@@ -139,6 +147,14 @@ describe('/', () => {
             topic: 'mitch',
             votes: 100
           });
+        });
+    });
+    it('ERROR 405 with invalid method request', () => {
+      return request(app)
+        .put('/api/articles')
+        .expect(405)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('Method Not Allowed');
         });
     });
   });
@@ -230,6 +246,14 @@ describe('/', () => {
           expect(body).to.eql({});
         });
     });
+    it('ERROR 405 with invalid method request', () => {
+      return request(app)
+        .put('/api/comments/1')
+        .expect(405)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('Method Not Allowed');
+        });
+    });
   });
 
   describe('/users/:username', () => {
@@ -244,6 +268,14 @@ describe('/', () => {
             name: 'jonny',
             username: 'butter_bridge'
           });
+        });
+    });
+    it('ERROR 405 with invalid method request', () => {
+      return request(app)
+        .put('/api/users/butter_bridge')
+        .expect(405)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('Method Not Allowed');
         });
     });
   });
