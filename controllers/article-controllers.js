@@ -6,6 +6,7 @@ const {
   insertArticleComment
 } = require('../models/article-models.js');
 const { selectUser } = require('../models/user-models.js');
+const { selectTopics } = require('../models/topic-models.js');
 
 const getArticles = (req, res, next) => {
   const author = req.query.author ? req.query.author : null;
@@ -17,7 +18,14 @@ const getArticles = (req, res, next) => {
           status: 404,
           msg: 'author does not exist'
         });
-      } else return selectArticles(req.query);
+      } else return selectTopics(req.query);
+    })
+    .then(topics => {
+      if (req.query.topic) {
+        if (topics.some(topic => topic.slug === req.query.topic) === false)
+          return Promise.reject({ status: 404, msg: 'topic does not exist' });
+      }
+      return selectArticles(req.query);
     })
     .then(articles => {
       res.status(200).send({ articles });

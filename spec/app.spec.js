@@ -189,6 +189,14 @@ describe.only('/', () => {
           expect(body.articles).to.eql([]);
         });
     });
+    it('ERROR 404, when topic is querried when it does not exist', () => {
+      return request(app)
+        .get('/api/articles?topic=pineapples')
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('topic does not exist');
+        });
+    });
   });
 
   describe('/articles/:article_id', () => {
