@@ -296,13 +296,32 @@ describe.only('/', () => {
     });
   });
 
-  describe('/articles/:article_id/comments', () => {
+  describe.only('/articles/:article_id/comments', () => {
     it('GET status:200 & an array of comments with the article_id given', () => {
       return request(app)
         .get('/api/articles/1/comments')
         .expect(200)
         .then(({ body }) => {
-          expect(body.articleComments).to.have.length(13);
+          expect(body.comments).to.have.length(13);
+          expect(body.comments).to.be.descendingBy('created_at');
+        });
+    });
+    it('GET status:200 & sorted by the query sorted_by', () => {
+      return request(app)
+        .get('/api/articles/1/comments?sort_by=votes')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).to.have.length(13);
+          expect(body.comments).to.be.descendingBy('votes');
+        });
+    });
+    it('GET status:200 & ordered by the query order', () => {
+      return request(app)
+        .get('/api/articles/1/comments?order=asc')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).to.have.length(13);
+          expect(body.comments).to.be.ascendingBy('created_at');
         });
     });
     it('ERROR status:400, invalid article_id', () => {

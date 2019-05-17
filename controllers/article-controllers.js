@@ -68,7 +68,7 @@ const patchArticle = (req, res, next) => {
 };
 
 const getArticleComments = (req, res, next) => {
-  selectArticleComments(req.params)
+  selectArticleComments(req.params, req.query)
     .then(articleComments => {
       if (articleComments.length > 0)
         res.status(200).send({ comments: articleComments });

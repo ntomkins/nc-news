@@ -54,18 +54,26 @@ const updateArticle = ({ article_id }, { inc_votes }) => {
     .returning('*');
 };
 
-const selectArticleComments = ({ article_id }) => {
-  return connection
-    .select(
-      'comments.comment_id',
-      'comments.votes',
-      'comments.created_at',
-      'comments.author',
-      'comments.body',
-      'comments.article_id'
-    )
-    .from('comments')
-    .where('comments.article_id', '=', article_id);
+const selectArticleComments = ({ article_id }, { sort_by, order }) => {
+  if (order !== 'desc' && order !== 'asc' && order !== undefined) {
+    console.log('got caught');
+    return Promise.reject({
+      status: 400,
+      msg: 'must order by asc or desc'
+    });
+  } else
+    return connection
+      .select(
+        'comments.comment_id',
+        'comments.votes',
+        'comments.created_at',
+        'comments.author',
+        'comments.body',
+        'comments.article_id'
+      )
+      .from('comments')
+      .orderBy(sort_by || 'created_at', order || 'desc')
+      .where('comments.article_id', '=', article_id);
 };
 
 const insertArticleComment = ({ article_id }, { username, body }) => {
