@@ -458,7 +458,7 @@ describe.only('/', () => {
           expect(body.msg).to.equal('inc_votes must be an integer');
         });
     });
-    it.only('ERROR status:404, comment not found', () => {
+    it('ERROR status:404, comment not found', () => {
       return request(app)
         .delete('/api/comments/99')
         .expect(404)
@@ -488,6 +488,14 @@ describe.only('/', () => {
         .expect(405)
         .then(({ body }) => {
           expect(body.msg).to.eql('Method Not Allowed');
+        });
+    });
+    it('ERROR status:404, user does not exist', () => {
+      return request(app)
+        .get('/api/users/snoopy')
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('user not found');
         });
     });
   });
