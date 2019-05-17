@@ -217,7 +217,7 @@ describe.only('/', () => {
           });
         });
     });
-    it('PATCH status:200, returns patched comment, add or subtracts inc_votes from article', () => {
+    it('PATCH status:200, returns patched article, add or subtracts inc_votes from article', () => {
       return request(app)
         .patch('/api/articles/1')
         .send({ inc_votes: 42 })
@@ -312,7 +312,7 @@ describe.only('/', () => {
           expect(body.msg).to.eql('article not found');
         });
     });
-    it.only('POST status:201 & returns the added comment', () => {
+    it('POST status:201 & returns the added comment', () => {
       return request(app)
         .post('/api/articles/1/comments')
         .send({ username: 'butter_bridge', body: 'this is a comment body' })
@@ -326,7 +326,7 @@ describe.only('/', () => {
           expect(body.postedComment).to.haveOwnProperty('created_at');
         });
     });
-    it.only('ERROR status:400 rejects when user does not send a username and body', () => {
+    it('ERROR status:400 rejects when user does not send a username and body', () => {
       return request(app)
         .post('/api/articles/1/comments')
         .send({
@@ -338,7 +338,7 @@ describe.only('/', () => {
           expect(body.msg).to.equal('comment must contain a username and body');
         });
     });
-    it.only('ERROR status:400 rejects when user does not send username and body with the correct syntax', () => {
+    it('ERROR status:400 rejects when user does not send username and body with the correct syntax', () => {
       return request(app)
         .post('/api/articles/1/comments')
         .send({
@@ -353,7 +353,7 @@ describe.only('/', () => {
           );
         });
     });
-    it.only('ERROR status:400 rejects when user does not send username and body with the correct syntax', () => {
+    it('ERROR status:400 rejects when user does not send username and body with the correct syntax', () => {
       return request(app)
         .post('/api/articles/1/comments')
         .send({
@@ -365,7 +365,7 @@ describe.only('/', () => {
           expect(body.msg).to.equal('comment and username must be text');
         });
     });
-    it.only('ERROR status:404, article not found when trying to post to article with no id', () => {
+    it('ERROR status:404, article not found when trying to post to article with no id', () => {
       return request(app)
         .post('/api/articles/999/comments')
         .send({
@@ -411,6 +411,51 @@ describe.only('/', () => {
         .expect(405)
         .then(({ body }) => {
           expect(body.msg).to.eql('Method Not Allowed');
+        });
+    });
+    it('ERROR status:400 with invalid comment_id input', () => {
+      return request(app)
+        .patch('/api/comments/two')
+        .send({ inc_votes: 1 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('invalid input syntax for type integer');
+        });
+    });
+    it('ERROR status:404 when comment_id does not exist', () => {
+      return request(app)
+        .patch('/api/comments/999')
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('comment not found');
+        });
+    });
+    it('ERROR status:400, returns error when no inc_votes on body', () => {
+      return request(app)
+        .patch('/api/comments/1')
+        .send({ pineapples: 42 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('request must include inc_votes');
+        });
+    });
+    it('ERROR status:400, returns error when no inc_votes on body', () => {
+      return request(app)
+        .patch('/api/comments/1')
+        .send({ inc_votes: 42, pineapples: 42 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('request must only include inc_votes');
+        });
+    });
+    it('ERROR status:400, returns error when no inc_votes on body', () => {
+      return request(app)
+        .patch('/api/comments/1')
+        .send({ inc_votes: '42' })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('inc_votes must be an integer');
         });
     });
   });
