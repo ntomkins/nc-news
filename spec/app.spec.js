@@ -156,6 +156,22 @@ describe.only('/', () => {
           expect(body.articles).to.have.length(5);
         });
     });
+    it('GET status:200, shows results for a page number, defaults to 1', () => {
+      return request(app)
+        .get('/api/articles?p=2')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0]).to.eql({
+            article_id: 11,
+            title: 'Am I a cat?',
+            author: 'icellusedkars',
+            topic: 'mitch',
+            votes: 0,
+            created_at: '1978-11-25T12:21:54.171Z',
+            comment_count: '0'
+          });
+        });
+    });
     it('ERROR status:405 with invalid method request', () => {
       return request(app)
         .put('/api/articles')
