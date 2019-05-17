@@ -458,6 +458,14 @@ describe.only('/', () => {
           expect(body.msg).to.equal('inc_votes must be an integer');
         });
     });
+    it.only('ERROR status:404, comment not found', () => {
+      return request(app)
+        .delete('/api/comments/99')
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('comment not found');
+        });
+    });
   });
 
   describe('/users/:username', () => {

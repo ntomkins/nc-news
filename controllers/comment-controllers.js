@@ -20,7 +20,9 @@ const patchComment = (req, res, next) => {
 const deleteComment = (req, res, next) => {
   delComment(req.params)
     .then(deletedComment => {
-      res.sendStatus(204);
+      if (deletedComment < 1)
+        return Promise.reject({ status: 404, msg: 'comment not found' });
+      else res.sendStatus(204);
     })
     .catch(next);
 };
