@@ -65,7 +65,13 @@ const patchArticle = (req, res, next) => {
 const getArticleComments = (req, res, next) => {
   selectArticleComments(req.params)
     .then(articleComments => {
-      res.status(200).send({ articleComments });
+      if (articleComments.length > 0) res.status(200).send({ articleComments });
+      else return Promise.all([selectArticle(req.params), articleComments]);
+    })
+    .then(([article, articleComments]) => {
+      if (!article)
+        return Promise.reject({ status: 404, msg: 'article not found' });
+      else return articleComments;
     })
     .catch(next);
 };

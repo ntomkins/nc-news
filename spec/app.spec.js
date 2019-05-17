@@ -288,22 +288,30 @@ describe.only('/', () => {
           expect(body.articleComments).to.have.length(13);
         });
     });
-    // it('ERROR status:400, invalid article_id', () => {
-    //   return request(app)
-    //     .get('/api/articles/cat/comments')
-    //     .expect(400)
-    //     .then(({ body }) => {
-    //       expect(body.msg).to.eql('invalid input syntax for type integer');
-    //     });
-    // });
-    // it('ERROR status:404, article not found', () => {
-    //   return request(app)
-    //     .get('/api/articles/9000/comments')
-    //     .expect(400)
-    //     .then(({ body }) => {
-    //       expect(body.msg).to.eql('invalid input syntax for type integer');
-    //     });
-    // });
+    it('ERROR status:400, invalid article_id', () => {
+      return request(app)
+        .get('/api/articles/cat/comments')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('invalid input syntax for type integer');
+        });
+    });
+    it('ERROR status:404, article not found', () => {
+      return request(app)
+        .get('/api/articles/9000/comments')
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('article not found');
+        });
+    });
+    it('ERROR status:200, article not found', () => {
+      return request(app)
+        .get('/api/articles/9000/comments')
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('article not found');
+        });
+    });
     it('POST status:201 & returns the added comment', () => {
       return request(app)
         .post('/api/articles/1/comments')
