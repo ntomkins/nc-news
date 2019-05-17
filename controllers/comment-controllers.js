@@ -1,6 +1,9 @@
 const { updateComment, delComment } = require('../models/comment-models.js');
 
 const patchComment = (req, res, next) => {
+  if (Object.keys(req.body).length === 0) {
+    req.body.inc_votes = 0;
+  }
   if (!Object.keys(req.body).includes('inc_votes')) {
     next({ status: 400, msg: 'request must include inc_votes' });
   } else if (Object.keys(req.body).length > 1) {

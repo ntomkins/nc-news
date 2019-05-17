@@ -98,11 +98,9 @@ const postArticleComment = (req, res, next) => {
   } else
     insertArticleComment(req.params, req.body)
       .then(postedComment => {
-        res.status(201).send({ postedComment: postedComment[0] });
+        res.status(201).send({ comment: postedComment[0] });
       })
-      .catch(err => {
-        next(err);
-      });
+      .catch(next);
 };
 
 module.exports = {
