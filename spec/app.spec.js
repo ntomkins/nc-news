@@ -79,7 +79,7 @@ describe.only('/', () => {
     });
   });
 
-  describe.only('/articles', () => {
+  describe('/articles', () => {
     it('GET status:200, sends array of the articles', () => {
       return request(app)
         .get('/api/articles')
@@ -320,12 +320,12 @@ describe.only('/', () => {
   });
 
   describe('/articles/:article_id/comments', () => {
-    it('GET status:200 & an array of comments with the article_id given', () => {
+    it.only('GET status:200 & an array of comments with the article_id given', () => {
       return request(app)
         .get('/api/articles/1/comments')
         .expect(200)
         .then(({ body }) => {
-          expect(body.comments).to.have.length(13);
+          expect(body.comments).to.have.length(10);
           expect(body.comments).to.be.descendingBy('created_at');
         });
     });
@@ -334,7 +334,6 @@ describe.only('/', () => {
         .get('/api/articles/1/comments?sort_by=votes')
         .expect(200)
         .then(({ body }) => {
-          expect(body.comments).to.have.length(13);
           expect(body.comments).to.be.descendingBy('votes');
         });
     });
@@ -343,8 +342,31 @@ describe.only('/', () => {
         .get('/api/articles/1/comments?order=asc')
         .expect(200)
         .then(({ body }) => {
-          expect(body.comments).to.have.length(13);
           expect(body.comments).to.be.ascendingBy('created_at');
+        });
+    });
+    it.only('GET status:200, can limit results per page to a query limit', () => {
+      return request(app)
+        .get('/api/articles/1/comments?limit=5')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).to.have.length(5);
+        });
+    });
+    it.only('GET status:200, shows results for a page number, defaults to 1', () => {
+      return request(app)
+        .get('/api/articles/1/comments?p=2')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).to.be.descendingBy('created_at');
+          expect(body.comments[0]).to.eql({
+            comment_id: 12,
+            votes: 0,
+            created_at: '2006-11-25T12:36:03.389Z',
+            author: 'icellusedkars',
+            body: 'Massive intercranial brain haemorrhage',
+            article_id: 1
+          });
         });
     });
     it('ERROR status:400, invalid article_id', () => {

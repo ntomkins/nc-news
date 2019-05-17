@@ -66,9 +66,13 @@ const updateArticle = ({ article_id }, { inc_votes }) => {
     .returning('*');
 };
 
-const selectArticleComments = ({ article_id }, { sort_by, order }) => {
+const selectArticleComments = (
+  { article_id },
+  { sort_by, order, limit = 10, p = 1 }
+) => {
+  p = +p;
+  limit = +limit;
   if (order !== 'desc' && order !== 'asc' && order !== undefined) {
-    console.log('got caught');
     return Promise.reject({
       status: 400,
       msg: 'must order by asc or desc'
@@ -85,6 +89,8 @@ const selectArticleComments = ({ article_id }, { sort_by, order }) => {
       )
       .from('comments')
       .orderBy(sort_by || 'created_at', order || 'desc')
+      .limit(limit)
+      .offset((p - 1) * limit)
       .where('comments.article_id', '=', article_id);
 };
 
