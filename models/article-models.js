@@ -1,6 +1,6 @@
 const connection = require('../db/connection.js');
 
-const selectArticles = ({ sort_by, order, author, topic }) => {
+const selectArticles = ({ sort_by, order, author, topic, limit }) => {
   if (order !== 'desc' && order !== 'asc' && order !== undefined) {
     return Promise.reject({
       status: 400,
@@ -21,6 +21,7 @@ const selectArticles = ({ sort_by, order, author, topic }) => {
       .leftJoin('comments', 'comments.article_id', '=', 'articles.article_id')
       .groupBy('articles.article_id')
       .orderBy(sort_by || 'created_at', order || 'desc')
+      .limit(limit || 10)
       .modify(query => {
         if (author) query.where('articles.author', '=', author);
         if (topic) query.where('articles.topic', '=', topic);

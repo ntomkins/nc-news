@@ -79,12 +79,13 @@ describe.only('/', () => {
     });
   });
 
-  describe('/articles', () => {
+  describe.only('/articles', () => {
     it('GET status:200, sends array of the articles', () => {
       return request(app)
         .get('/api/articles')
         .expect(200)
         .then(({ body }) => {
+          expect(body.articles).to.have.length(10);
           expect(body.articles[0]).to.eql({
             article_id: 1,
             author: 'butter_bridge',
@@ -119,7 +120,6 @@ describe.only('/', () => {
         .expect(200)
         .then(({ body }) => {
           body.articles.should.all.have.property('author', 'butter_bridge');
-          expect(body.articles).to.have.length(3);
           expect(body.articles[0]).to.eql({
             article_id: 1,
             author: 'butter_bridge',
@@ -137,7 +137,6 @@ describe.only('/', () => {
         .expect(200)
         .then(({ body }) => {
           body.articles.should.all.have.property('topic', 'mitch');
-          expect(body.articles).to.have.length(11);
           expect(body.articles[0]).to.eql({
             article_id: 1,
             author: 'butter_bridge',
@@ -147,6 +146,14 @@ describe.only('/', () => {
             topic: 'mitch',
             votes: 100
           });
+        });
+    });
+    it('GET status:200, can limit results per page to a query limit', () => {
+      return request(app)
+        .get('/api/articles?limit=5')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).to.have.length(5);
         });
     });
     it('ERROR status:405 with invalid method request', () => {
