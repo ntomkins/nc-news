@@ -296,7 +296,7 @@ describe.only('/', () => {
     });
   });
 
-  describe.only('/articles/:article_id/comments', () => {
+  describe('/articles/:article_id/comments', () => {
     it('GET status:200 & an array of comments with the article_id given', () => {
       return request(app)
         .get('/api/articles/1/comments')
@@ -354,12 +354,12 @@ describe.only('/', () => {
         .send({ username: 'butter_bridge', body: 'this is a comment body' })
         .expect(201)
         .then(({ body }) => {
-          expect(body.postedComment.comment_id).to.equal(19);
-          expect(body.postedComment.author).to.equal('butter_bridge');
-          expect(body.postedComment.article_id).to.equal(1);
-          expect(body.postedComment.votes).to.equal(0);
-          expect(body.postedComment.body).to.equal('this is a comment body');
-          expect(body.postedComment).to.haveOwnProperty('created_at');
+          expect(body.comment.comment_id).to.equal(19);
+          expect(body.comment.author).to.equal('butter_bridge');
+          expect(body.comment.article_id).to.equal(1);
+          expect(body.comment.votes).to.equal(0);
+          expect(body.comment.body).to.equal('this is a comment body');
+          expect(body.comment).to.haveOwnProperty('created_at');
         });
     });
     it('ERROR status:400 rejects when user does not send a username and body', () => {
