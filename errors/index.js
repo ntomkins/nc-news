@@ -14,7 +14,7 @@ exports.handleCustomErrors = (err, req, res, next) => {
 
 exports.handleSQLErrors = (err, req, res, next) => {
   const codes = {
-    '22P02': 'invalid input syntax for type integer',
+    '22P02': 'id must be type integer',
     '42703': 'querry input does not exist',
     '23503': 'article not found'
   };

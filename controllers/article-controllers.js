@@ -48,6 +48,9 @@ const getArticle = (req, res, next) => {
 };
 
 const patchArticle = (req, res, next) => {
+  if (Object.keys(req.body).length === 0) {
+    req.body.inc_votes = 0;
+  }
   if (!Object.keys(req.body).includes('inc_votes')) {
     next({ status: 400, msg: 'request must include inc_votes' });
   } else if (Object.keys(req.body).length > 1) {
@@ -57,7 +60,9 @@ const patchArticle = (req, res, next) => {
   } else
     updateArticle(req.params, req.body)
       .then(updatedArticle => {
-        res.status(200).send({ updatedArticle: updatedArticle[0] });
+        if (updatedArticle.length < 1)
+          return Promise.reject({ status: 404, msg: 'article not found' });
+        res.status(200).send({ article: updatedArticle[0] });
       })
       .catch(next);
 };
@@ -65,13 +70,14 @@ const patchArticle = (req, res, next) => {
 const getArticleComments = (req, res, next) => {
   selectArticleComments(req.params)
     .then(articleComments => {
-      if (articleComments.length > 0) res.status(200).send({ articleComments });
+      if (articleComments.length > 0)
+        res.status(200).send({ comments: articleComments });
       else return Promise.all([selectArticle(req.params), articleComments]);
     })
     .then(([article, articleComments]) => {
       if (!article)
         return Promise.reject({ status: 404, msg: 'article not found' });
-      else return articleComments;
+      else return { comments: articleComments };
     })
     .catch(next);
 };

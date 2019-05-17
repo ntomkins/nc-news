@@ -17,6 +17,14 @@ describe.only('/', () => {
     connection.destroy();
   });
   after(() => connection.destroy());
+  it('ERROR status:404 with invalid route', () => {
+    return request(app)
+      .get('/api/pets')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).to.eql('Route Not Found');
+      });
+  });
 
   describe('/api', () => {
     it('GET status:200', () => {
@@ -25,14 +33,6 @@ describe.only('/', () => {
         .expect(200)
         .then(({ body }) => {
           expect(body.ok).to.equal(true);
-        });
-    });
-    it('ERROR status:404 with invalid route', () => {
-      return request(app)
-        .get('/api/pets')
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).to.eql('Route Not Found');
         });
     });
     it('ERROR status:405 with invalid method request', () => {
@@ -223,7 +223,7 @@ describe.only('/', () => {
         .send({ inc_votes: 42 })
         .expect(200)
         .then(({ body }) => {
-          expect(body.updatedArticle).to.eql({
+          expect(body.article).to.eql({
             article_id: 1,
             title: 'Living in the shadow of a great man',
             body: 'I find this existence challenging',
@@ -234,6 +234,14 @@ describe.only('/', () => {
           });
         });
     });
+    it('ERROR status:405 method not allowed', () => {
+      return request(app)
+        .put('/api/articles/1')
+        .expect(405)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('Method Not Allowed');
+        });
+    });
     it('ERROR status:404 when no article is found for the given article_id', () => {
       return request(app)
         .get('/api/articles/999')
@@ -242,12 +250,21 @@ describe.only('/', () => {
           expect(body.msg).to.eql('No article found for article_id: 999');
         });
     });
+    it('ERROR status:404 when no article is found for the given article_id', () => {
+      return request(app)
+        .patch('/api/articles/999')
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.eql('article not found');
+        });
+    });
     it('ERROR status:400 when incorrect article_id syntax is used', () => {
       return request(app)
         .get('/api/articles/Moustache')
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).to.eql('invalid input syntax for type integer');
+          expect(body.msg).to.eql('id must be type integer');
         });
     });
     it('ERROR status:400, returns error when no inc_votes on body', () => {
@@ -293,7 +310,7 @@ describe.only('/', () => {
         .get('/api/articles/cat/comments')
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).to.eql('invalid input syntax for type integer');
+          expect(body.msg).to.eql('id must be type integer');
         });
     });
     it('ERROR status:404, article not found', () => {
@@ -419,7 +436,7 @@ describe.only('/', () => {
         .send({ inc_votes: 1 })
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).to.eql('invalid input syntax for type integer');
+          expect(body.msg).to.eql('id must be type integer');
         });
     });
     it('ERROR status:404 when comment_id does not exist', () => {
