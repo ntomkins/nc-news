@@ -312,7 +312,7 @@ describe.only('/', () => {
           expect(body.msg).to.eql('article not found');
         });
     });
-    it('POST status:201 & returns the added comment', () => {
+    it.only('POST status:201 & returns the added comment', () => {
       return request(app)
         .post('/api/articles/1/comments')
         .send({ username: 'butter_bridge', body: 'this is a comment body' })
@@ -324,6 +324,57 @@ describe.only('/', () => {
           expect(body.postedComment.votes).to.equal(0);
           expect(body.postedComment.body).to.equal('this is a comment body');
           expect(body.postedComment).to.haveOwnProperty('created_at');
+        });
+    });
+    it.only('ERROR status:400 rejects when user does not send a username and body', () => {
+      return request(app)
+        .post('/api/articles/1/comments')
+        .send({
+          pineapples: 'butter_bridge',
+          oranges: 'this is a comment body'
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('comment must contain a username and body');
+        });
+    });
+    it.only('ERROR status:400 rejects when user does not send username and body with the correct syntax', () => {
+      return request(app)
+        .post('/api/articles/1/comments')
+        .send({
+          username: 'butter_bridge',
+          body: 'this is a comment body',
+          picture: 'picture.jpg'
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal(
+            'request must only include a username and body'
+          );
+        });
+    });
+    it.only('ERROR status:400 rejects when user does not send username and body with the correct syntax', () => {
+      return request(app)
+        .post('/api/articles/1/comments')
+        .send({
+          username: 1234,
+          body: false
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('comment and username must be text');
+        });
+    });
+    it.only('ERROR status:404, article not found when trying to post to article with no id', () => {
+      return request(app)
+        .post('/api/articles/999/comments')
+        .send({
+          username: 'butter_bridge',
+          body: 'this is a comment body'
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).to.equal('article not found');
         });
     });
   });

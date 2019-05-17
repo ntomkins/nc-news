@@ -77,11 +77,26 @@ const getArticleComments = (req, res, next) => {
 };
 
 const postArticleComment = (req, res, next) => {
-  insertArticleComment(req.params, req.body)
-    .then(postedComment => {
-      res.status(201).send({ postedComment: postedComment[0] });
-    })
-    .catch(next);
+  if (
+    !Object.keys(req.body).includes('username') ||
+    !Object.keys(req.body).includes('body')
+  ) {
+    next({ status: 400, msg: 'comment must contain a username and body' });
+  } else if (Object.keys(req.body).length > 2) {
+    next({ status: 400, msg: 'request must only include a username and body' });
+  } else if (
+    typeof req.body.username !== 'string' ||
+    typeof req.body.body !== 'string'
+  ) {
+    next({ status: 400, msg: 'comment and username must be text' });
+  } else
+    insertArticleComment(req.params, req.body)
+      .then(postedComment => {
+        res.status(201).send({ postedComment: postedComment[0] });
+      })
+      .catch(err => {
+        next(err);
+      });
 };
 
 module.exports = {
