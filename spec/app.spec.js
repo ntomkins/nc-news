@@ -79,7 +79,7 @@ describe.only('/', () => {
     });
   });
 
-  describe.only('/articles', () => {
+  describe('/articles', () => {
     it('GET status:200, sends array of the articles', () => {
       return request(app)
         .get('/api/articles')
@@ -327,7 +327,7 @@ describe.only('/', () => {
     });
   });
 
-  describe('/articles/:article_id/comments', () => {
+  describe.only('/articles/:article_id/comments', () => {
     it('GET status:200 an array of comments sent for the article_id given', () => {
       return request(app)
         .get('/api/articles/1/comments')
@@ -374,6 +374,14 @@ describe.only('/', () => {
             author: 'icellusedkars',
             body: 'Massive intercranial brain haemorrhage'
           });
+        });
+    });
+    it('GET status:200, shows results for a page number, defaults to 1', () => {
+      return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.total_count).to.eql(13);
         });
     });
     it('ERROR status:400, invalid article_id', () => {

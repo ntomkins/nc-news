@@ -100,7 +100,7 @@ const selectArticleComments = (
 };
 
 const countArticleComments = ({ article_id }) => {
-  return connection('articles')
+  return connection('comments')
     .count()
     .where('comments.article_id', '=', article_id)
     .first();
@@ -129,5 +129,6 @@ module.exports = {
   selectArticleComments,
   insertArticleComment,
   updateComment,
-  countAllArticles
+  countAllArticles,
+  countArticleComments
 };

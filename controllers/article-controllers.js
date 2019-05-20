@@ -4,7 +4,8 @@ const {
   updateArticle,
   selectArticleComments,
   insertArticleComment,
-  countAllArticles
+  countAllArticles,
+  countArticleComments
 } = require('../models/article-models.js');
 const { selectUser } = require('../models/user-models.js');
 const { selectTopics } = require('../models/topic-models.js');
@@ -26,10 +27,7 @@ const getArticles = (req, res, next) => {
         if (topics.some(topic => topic.slug === req.query.topic) === false)
           return Promise.reject({ status: 404, msg: 'topic does not exist' });
       }
-      return selectArticles(req.query);
-    })
-    .then(articles => {
-      return Promise.all([countAllArticles(), articles]);
+      return Promise.all([countAllArticles(), selectArticles(req.query)]);
     })
     .then(([{ count }, articles]) => {
       count = +count;
@@ -73,17 +71,22 @@ const patchArticle = (req, res, next) => {
 };
 
 const getArticleComments = (req, res, next) => {
-  selectArticleComments(req.params, req.query)
-    .then(articleComments => {
-      if (articleComments.length > 0)
-        res.status(200).send({ comments: articleComments });
-      else return Promise.all([selectArticle(req.params), articleComments]);
+  Promise.all([
+    selectArticleComments(req.params, req.query),
+    countArticleComments(req.params)
+  ])
+    .then(([articleComments, { count }]) => {
+      count = +count;
+      if (count > 0)
+        res.status(200).send({ comments: articleComments, total_count: count });
+      else
+        return Promise.all([selectArticle(req.params), articleComments, count]);
     })
-    .catch(next)
-    .then(([article, articleComments]) => {
+    .then(([article, articleComments, count]) => {
       if (!article)
         return Promise.reject({ status: 404, msg: 'article not found' });
-      else res.status(200).send({ comments: articleComments });
+      else
+        res.status(200).send({ comments: articleComments, total_count: count });
     })
     .catch(next);
 };
