@@ -1,0 +1,28 @@
+{
+  "/api/topics": {
+    "GET": "Returns all the different topics"
+  },
+
+  "/api/articles": {
+    "GET": "Returns all the articles, descending chronologically, limmited to 10 per page, querry search with sort_by, order, author, topic, limit"
+  },
+
+  "/api/articles/:article_id": {
+    "GET": "Returns the article for the given ID",
+    "PATCH": "Send a JSON body with inc_votes with an integer value to increment the votes for the article with the given ID"
+  },
+
+  "/api/articles/:article_id/comments": {
+    "GET": "Returns the comments for the article with the given article ID",
+    "POST": "Post a comment to an article with the given ID, using a JSON object with a username and body"
+  },
+
+  "/api/comments/comment_id": {
+    "PATCH": "Send a JSON body with inc_votes with an integer value to increment the votes for the comment with the given ID",
+    "DELETE": "Deletes a comment that has the given ID"
+  },
+
+  "/api/users/user_id": { "GET": "Returns the user with the given ID" },
+
+  "/api": { "GET": "Returns the api endpoints for this database" }
+}

@@ -327,7 +327,7 @@ describe.only('/', () => {
     });
   });
 
-  describe.only('/articles/:article_id/comments', () => {
+  describe('/articles/:article_id/comments', () => {
     it('GET status:200 an array of comments sent for the article_id given', () => {
       return request(app)
         .get('/api/articles/1/comments')
@@ -384,6 +384,20 @@ describe.only('/', () => {
           expect(body.total_count).to.eql(13);
         });
     });
+    it('POST status:201 & returns the added comment', () => {
+      return request(app)
+        .post('/api/articles/1/comments')
+        .send({ username: 'butter_bridge', body: 'this is a comment body' })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.comment.comment_id).to.equal(19);
+          expect(body.comment.author).to.equal('butter_bridge');
+          expect(body.comment.article_id).to.equal(1);
+          expect(body.comment.votes).to.equal(0);
+          expect(body.comment.body).to.equal('this is a comment body');
+          expect(body.comment).to.haveOwnProperty('created_at');
+        });
+    });
     it('ERROR status:400, invalid article_id', () => {
       return request(app)
         .get('/api/articles/cat/comments')
@@ -406,20 +420,6 @@ describe.only('/', () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).to.eql('article not found');
-        });
-    });
-    it('POST status:201 & returns the added comment', () => {
-      return request(app)
-        .post('/api/articles/1/comments')
-        .send({ username: 'butter_bridge', body: 'this is a comment body' })
-        .expect(201)
-        .then(({ body }) => {
-          expect(body.comment.comment_id).to.equal(19);
-          expect(body.comment.author).to.equal('butter_bridge');
-          expect(body.comment.article_id).to.equal(1);
-          expect(body.comment.votes).to.equal(0);
-          expect(body.comment.body).to.equal('this is a comment body');
-          expect(body.comment).to.haveOwnProperty('created_at');
         });
     });
     it('ERROR status:400 rejects when user does not send a username and body', () => {
