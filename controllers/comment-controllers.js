@@ -15,7 +15,7 @@ const patchComment = (req, res, next) => {
       .then(updatedComment => {
         if (updatedComment.length < 1)
           return Promise.reject({ status: 404, msg: 'comment not found' });
-        else res.status(200).send({ updatedComment: updatedComment[0] });
+        else res.status(200).send({ comment: updatedComment[0] });
       })
       .catch(next);
 };
