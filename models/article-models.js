@@ -84,8 +84,7 @@ const selectArticleComments = (
         'comments.votes',
         'comments.created_at',
         'comments.author',
-        'comments.body',
-        'comments.article_id'
+        'comments.body'
       )
       .from('comments')
       .orderBy(sort_by || 'created_at', order || 'desc')

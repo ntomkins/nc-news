@@ -1,9 +1,6 @@
 const timeToDate = data => {
   return data.map(item => {
     let dateStr = new Date(item.created_at);
-    // .toISOString()
-    // .slice(0, 19)
-    // .replace('T', ' ');
     const { created_at, ...otherKeys } = item;
     otherKeys.created_at = dateStr;
     return otherKeys;

@@ -320,7 +320,7 @@ describe.only('/', () => {
   });
 
   describe('/articles/:article_id/comments', () => {
-    it.only('GET status:200 & an array of comments with the article_id given', () => {
+    it('GET status:200 an array of comments sent for the article_id given', () => {
       return request(app)
         .get('/api/articles/1/comments')
         .expect(200)
@@ -345,7 +345,7 @@ describe.only('/', () => {
           expect(body.comments).to.be.ascendingBy('created_at');
         });
     });
-    it.only('GET status:200, can limit results per page to a query limit', () => {
+    it('GET status:200, can limit results per page to a query limit', () => {
       return request(app)
         .get('/api/articles/1/comments?limit=5')
         .expect(200)
@@ -353,7 +353,7 @@ describe.only('/', () => {
           expect(body.comments).to.have.length(5);
         });
     });
-    it.only('GET status:200, shows results for a page number, defaults to 1', () => {
+    it('GET status:200, shows results for a page number, defaults to 1', () => {
       return request(app)
         .get('/api/articles/1/comments?p=2')
         .expect(200)
@@ -364,8 +364,7 @@ describe.only('/', () => {
             votes: 0,
             created_at: '2006-11-25T12:36:03.389Z',
             author: 'icellusedkars',
-            body: 'Massive intercranial brain haemorrhage',
-            article_id: 1
+            body: 'Massive intercranial brain haemorrhage'
           });
         });
     });
@@ -467,7 +466,7 @@ describe.only('/', () => {
         .send({ inc_votes: 42 })
         .expect(200)
         .then(({ body }) => {
-          expect(body.updatedComment).to.eql({
+          expect(body.comment).to.eql({
             comment_id: 1,
             author: 'butter_bridge',
             article_id: 9,

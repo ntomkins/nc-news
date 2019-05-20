@@ -16,20 +16,17 @@ exports.seed = (knex, Promise) => {
         .returning('*');
     })
     .then(topicRows => {
-      // console.log(topicRows);
       return knex('users')
         .insert(userData)
         .returning('*');
     })
     .then(userRows => {
-      // console.log(userRows);
       const articleDataDate = timeToDate(articleData);
       return knex('articles')
         .insert(articleDataDate)
         .returning('*');
     })
     .then(articleRows => {
-      //console.log(articleRows);
       const commentDataAuthor = renameKey(commentData, 'created_by', 'author');
       const commentDataDate = timeToDate(commentDataAuthor);
       const articleIdRef = createRef(articleRows, 'title', 'article_id');
@@ -39,12 +36,9 @@ exports.seed = (knex, Promise) => {
         'belongs_to',
         'article_id'
       );
-      //console.log(commentDataDateId);
       return knex('comments')
         .insert(commentDataDateId)
         .returning('*');
     })
-    .then(commentRows => {
-      // console.log(commentRows);
-    });
+    .then(commentRows => {});
 };
