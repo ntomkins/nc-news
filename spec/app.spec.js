@@ -319,7 +319,7 @@ describe.only('/', () => {
     });
   });
 
-  describe('/articles/:article_id/comments', () => {
+  describe.only('/articles/:article_id/comments', () => {
     it('GET status:200 an array of comments sent for the article_id given', () => {
       return request(app)
         .get('/api/articles/1/comments')

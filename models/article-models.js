@@ -70,7 +70,7 @@ const selectArticleComments = (
   { article_id },
   { sort_by, order, limit = 10, p = 1 }
 ) => {
-  p = +p;
+  if (typeof p === 'string') p = +p;
   limit = +limit;
   if (order !== 'desc' && order !== 'asc' && order !== undefined) {
     return Promise.reject({

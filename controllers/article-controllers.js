@@ -74,10 +74,11 @@ const getArticleComments = (req, res, next) => {
         res.status(200).send({ comments: articleComments });
       else return Promise.all([selectArticle(req.params), articleComments]);
     })
+    .catch(next)
     .then(([article, articleComments]) => {
       if (!article)
         return Promise.reject({ status: 404, msg: 'article not found' });
-      else return { comments: articleComments };
+      else res.status(200).send({ comments: articleComments });
     })
     .catch(next);
 };
