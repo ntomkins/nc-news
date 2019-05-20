@@ -79,7 +79,7 @@ describe.only('/', () => {
     });
   });
 
-  describe('/articles', () => {
+  describe.only('/articles', () => {
     it('GET status:200, sends array of the articles', () => {
       return request(app)
         .get('/api/articles')
@@ -170,6 +170,14 @@ describe.only('/', () => {
             created_at: '1978-11-25T12:21:54.171Z',
             comment_count: '0'
           });
+        });
+    });
+    it('GET status:200, sends a total_count of all articles', () => {
+      return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.total_count).to.eql(12);
         });
     });
     it('ERROR status:405 with invalid method request', () => {
@@ -319,7 +327,7 @@ describe.only('/', () => {
     });
   });
 
-  describe.only('/articles/:article_id/comments', () => {
+  describe('/articles/:article_id/comments', () => {
     it('GET status:200 an array of comments sent for the article_id given', () => {
       return request(app)
         .get('/api/articles/1/comments')

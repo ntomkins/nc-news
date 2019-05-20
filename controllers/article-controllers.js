@@ -3,7 +3,8 @@ const {
   selectArticle,
   updateArticle,
   selectArticleComments,
-  insertArticleComment
+  insertArticleComment,
+  countAllArticles
 } = require('../models/article-models.js');
 const { selectUser } = require('../models/user-models.js');
 const { selectTopics } = require('../models/topic-models.js');
@@ -28,7 +29,11 @@ const getArticles = (req, res, next) => {
       return selectArticles(req.query);
     })
     .then(articles => {
-      res.status(200).send({ articles });
+      return Promise.all([countAllArticles(), articles]);
+    })
+    .then(([{ count }, articles]) => {
+      count = +count;
+      res.status(200).send({ articles, total_count: count });
     })
     .catch(next);
 };

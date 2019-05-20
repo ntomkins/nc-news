@@ -39,6 +39,12 @@ const selectArticles = ({
       });
 };
 
+const countAllArticles = () => {
+  return connection('articles')
+    .count()
+    .first();
+};
+
 const selectArticle = ({ article_id }) => {
   return connection
     .select(
@@ -70,7 +76,7 @@ const selectArticleComments = (
   { article_id },
   { sort_by, order, limit = 10, p = 1 }
 ) => {
-  if (typeof p === 'string') p = +p;
+  p = +p;
   limit = +limit;
   if (order !== 'desc' && order !== 'asc' && order !== undefined) {
     return Promise.reject({
@@ -91,6 +97,13 @@ const selectArticleComments = (
       .limit(limit)
       .offset((p - 1) * limit)
       .where('comments.article_id', '=', article_id);
+};
+
+const countArticleComments = ({ article_id }) => {
+  return connection('articles')
+    .count()
+    .where('comments.article_id', '=', article_id)
+    .first();
 };
 
 const insertArticleComment = ({ article_id }, { username, body }) => {
@@ -115,5 +128,6 @@ module.exports = {
   updateArticle,
   selectArticleComments,
   insertArticleComment,
-  updateComment
+  updateComment,
+  countAllArticles
 };
