@@ -24,5 +24,5 @@
 
   "/api/users/user_id": { "GET": "Returns the user with the given ID" },
 
-  "/api": { "GET": "Returns the api endpoints for this database" }
+  "/api": { "GET": "Returns the api endpoints for nc news" }
 }
