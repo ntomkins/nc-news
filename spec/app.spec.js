@@ -180,6 +180,22 @@ describe.only('/', () => {
           expect(body.total_count).to.eql(12);
         });
     });
+    it('GET status:200, sends a total_count of all articles with query topic', () => {
+      return request(app)
+        .get('/api/articles?topic=mitch')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.total_count).to.eql(11);
+        });
+    });
+    it('GET status:200, sends a total_count of all articles with query author', () => {
+      return request(app)
+        .get('/api/articles?author=butter_bridge')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.total_count).to.eql(3);
+        });
+    });
     it('ERROR status:405 with invalid method request', () => {
       return request(app)
         .put('/api/articles')

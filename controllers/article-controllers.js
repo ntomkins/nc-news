@@ -4,7 +4,7 @@ const {
   updateArticle,
   selectArticleComments,
   insertArticleComment,
-  countAllArticles,
+  countArticles,
   countArticleComments
 } = require('../models/article-models.js');
 const { selectUser } = require('../models/user-models.js');
@@ -27,7 +27,7 @@ const getArticles = (req, res, next) => {
         if (topics.some(topic => topic.slug === req.query.topic) === false)
           return Promise.reject({ status: 404, msg: 'topic does not exist' });
       }
-      return Promise.all([countAllArticles(), selectArticles(req.query)]);
+      return Promise.all([countArticles(req.query), selectArticles(req.query)]);
     })
     .then(([{ count }, articles]) => {
       count = +count;

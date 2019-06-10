@@ -39,9 +39,13 @@ const selectArticles = ({
       });
 };
 
-const countAllArticles = () => {
+const countArticles = ({ author, topic }) => {
   return connection('articles')
     .count()
+    .modify(query => {
+      if (author) query.where('articles.author', '=', author);
+      if (topic) query.where('articles.topic', '=', topic);
+    })
     .first();
 };
 
@@ -129,6 +133,6 @@ module.exports = {
   selectArticleComments,
   insertArticleComment,
   updateComment,
-  countAllArticles,
+  countArticles,
   countArticleComments
 };
