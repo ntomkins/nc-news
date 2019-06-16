@@ -11,12 +11,13 @@ chai.use(chaiSorted);
 const app = require('../app');
 const connection = require('../db/connection');
 
-describe.only('/', () => {
+describe('/', () => {
   beforeEach(() => connection.seed.run());
   after(() => {
     connection.destroy();
   });
   after(() => connection.destroy());
+
   it('ERROR status:404 with invalid route', () => {
     return request(app)
       .get('/api/pets')
@@ -27,12 +28,12 @@ describe.only('/', () => {
   });
 
   describe('/api', () => {
-    it('GET status:200', () => {
+    it('GET status:200, returns endpoint instructions', () => {
       return request(app)
         .get('/api')
         .expect(200)
         .then(({ body }) => {
-          expect(body.ok).to.equal(true);
+          expect(typeof body).to.equal('object');
         });
     });
     it('ERROR status:405 with invalid method request', () => {
