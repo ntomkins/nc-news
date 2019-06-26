@@ -22,7 +22,7 @@ To run locally please follow the instructions bellow, a live hosted version is a
 
    `npm install`
 
-4. Set up test an developer databases'
+4. Set up test and developer databases
 
    `npm run setup-dbs`
 
@@ -34,11 +34,50 @@ To run locally please follow the instructions bellow, a live hosted version is a
 
    `npm run dev`
 
+7. Lastly you will need to add a `knexfile.js` file at the same level as your app.js. An example is given below, Linux users will need to provide a username and password for database connections.
+
+```
+const ENV = process.env.NODE_ENV || 'development';
+const { DB_URL } = process.env;
+
+const baseConfig = {
+  client: 'pg',
+  migrations: {
+    directory: './db/migrations'
+  },
+  seeds: {
+    directory: './db/seeds'
+  }
+};
+
+const customConfigs = {
+  development: {
+    connection: {
+      database: 'nc_news'
+      // username: "",
+      // password: "",
+    }
+  },
+  test: {
+    connection: {
+      database: 'nc_news_test'
+      // username: "",
+      // password: "",
+    }
+  },
+  production: {
+    connection: `${DB_URL}?ssl=true`
+  }
+};
+
+module.exports = { ...baseConfig, ...customConfigs[ENV] };
+```
+
 ### Testing
 
 ---
 
-The app endpoints and seed functions have been fully tested using mocha and chai. To begin runnin the test use the following command
+The app's endpoints and seed functions have been fully tested using mocha and chai. To begin running the tests use the following command:
 
     `npm run test`
 
@@ -292,7 +331,7 @@ Responds with status 204 and no content
 
 ---
 
-The repo for the front-end of this NC News project can be found [here on github](https://github.com/ntomkins/nc-news-app), which is also [hosted on netlify]()
+The repo for the front-end of this NC News project can be found [here on github](https://github.com/ntomkins/nc-news-app), which is also [hosted on netlify](https://ntomkins-nc-news.netlify.com/)
 
 ### Author
 
